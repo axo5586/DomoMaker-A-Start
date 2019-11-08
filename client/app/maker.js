@@ -3,12 +3,29 @@ const handleDomo = (e) => {
 
     $("#domoMessage").animate({width:'hide'}, 350);
 
-    if($("#domoName").val == '' || $("#domoAge").val() == ''){
+    if($("#domoName").val == '' || $("#domoAge").val() == '' || $("#domoLevel").val() == ''){
         handleError("RAWR! All fields are required");
         return false;
     }
     
     sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
+        loadDomosFromServer();
+    });
+
+    return false;
+}
+
+const handleDomoLevel = (e) => {
+    e.preventDefault();
+
+    $("#domoMessage").animate({width:'hide'}, 350);
+
+    if($("#domoName2").val == '' || $("#domoLevel2").val() == ''){
+        handleError("RAWR! Name and levels are required!");
+        return false;
+    }
+
+    sendAjax('POST', $("#levelForm").attr("action"), $("#levelForm").serialize(), function() {
         loadDomosFromServer();
     });
 
@@ -27,7 +44,9 @@ const DomoForm = (props) => {
             <input id="domoName" type="text" name="name" placeholder="Domo Name" />
             <label htmlFor="age">Age: </label>
             <input id="domoAge" type="text" name="age" placeholder="Domo Age" />
-            <input type="hidden" name="_csrf" value={props.csrf} />
+            <label htmlFor="level">Level: </label>
+            <input id="domoLevel" type="text" name="level" placeholder="Domo Level" />
+            <input type="hidden" name="_csrf" value={props.csrf} />            
             <input className="makeDomoSubmit" type="submit" value="Make Domo" />
         </form>
     );
@@ -48,6 +67,7 @@ const DomoList = function(props){
                 <img src="assets/img/domoface.jpeg" alt="domo face" className="domoFace"/>
                 <h3 className = "domoName"> Name: {domo.name} </h3>
                 <h3 className = "domoAge"> Age: {domo.age} </h3>
+                <h3 className = "domoLevel"> Level: {domo.level} </h3>
             </div>
         );
     });
@@ -56,6 +76,25 @@ const DomoList = function(props){
         <div className = "domoList">
             {domoNodes}
         </div>
+    );
+};
+
+const DomoAddLevel = (props) => {
+    return (
+        <form id="levelForm" name="levelForm"
+            onSubmit={handleDomoLevel}
+            action="/addDomoLevel"
+            method="POST"
+            className="domoForm"
+        >
+
+            <label htmlFor="domoName2">Name: </label>
+            <input id="name" type="text" name="name" placeholder="Domo Name" />
+            <label htmlFor="level">Levels: </label>
+            <input id="domoLevel2" type="text" name="level" placeholder="Levels to add to domo" />
+            <input type="hidden" name="_csrf" value={props.csrf} />
+            <input className="makeDomoSubmit" type="submit" value="Add Level" />      
+        </form>
     );
 };
 
@@ -74,6 +113,10 @@ const setup = function (csrf) {
 
     ReactDOM.render(
         <DomoList domos={[]} />, document.querySelector("#domos")
+    );
+
+    ReactDOM.render(
+        <DomoAddLevel csrf={csrf} />, document.querySelector("#domoAddLevel")
     );
 
     loadDomosFromServer();

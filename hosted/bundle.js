@@ -5,12 +5,29 @@ var handleDomo = function handleDomo(e) {
 
     $("#domoMessage").animate({ width: 'hide' }, 350);
 
-    if ($("#domoName").val == '' || $("#domoAge").val() == '') {
+    if ($("#domoName").val == '' || $("#domoAge").val() == '' || $("#domoLevel").val() == '') {
         handleError("RAWR! All fields are required");
         return false;
     }
 
     sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
+        loadDomosFromServer();
+    });
+
+    return false;
+};
+
+var handleDomoLevel = function handleDomoLevel(e) {
+    e.preventDefault();
+
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+
+    if ($("#domoName2").val == '' || $("#domoLevel2").val() == '') {
+        handleError("RAWR! Name and levels are required!");
+        return false;
+    }
+
+    sendAjax('POST', $("#levelForm").attr("action"), $("#levelForm").serialize(), function () {
         loadDomosFromServer();
     });
 
@@ -38,6 +55,12 @@ var DomoForm = function DomoForm(props) {
             "Age: "
         ),
         React.createElement("input", { id: "domoAge", type: "text", name: "age", placeholder: "Domo Age" }),
+        React.createElement(
+            "label",
+            { htmlFor: "level" },
+            "Level: "
+        ),
+        React.createElement("input", { id: "domoLevel", type: "text", name: "level", placeholder: "Domo Level" }),
         React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
         React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Make Domo" })
     );
@@ -74,6 +97,13 @@ var DomoList = function DomoList(props) {
                 " Age: ",
                 domo.age,
                 " "
+            ),
+            React.createElement(
+                "h3",
+                { className: "domoLevel" },
+                " Level: ",
+                domo.level,
+                " "
             )
         );
     });
@@ -82,6 +112,32 @@ var DomoList = function DomoList(props) {
         "div",
         { className: "domoList" },
         domoNodes
+    );
+};
+
+var DomoAddLevel = function DomoAddLevel(props) {
+    return React.createElement(
+        "form",
+        { id: "levelForm", name: "levelForm",
+            onSubmit: handleDomoLevel,
+            action: "/addDomoLevel",
+            method: "POST",
+            className: "domoForm"
+        },
+        React.createElement(
+            "label",
+            { htmlFor: "domoName2" },
+            "Name: "
+        ),
+        React.createElement("input", { id: "name", type: "text", name: "name", placeholder: "Domo Name" }),
+        React.createElement(
+            "label",
+            { htmlFor: "level" },
+            "Levels: "
+        ),
+        React.createElement("input", { id: "domoLevel2", type: "text", name: "level", placeholder: "Levels to add to domo" }),
+        React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+        React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Add Level" })
     );
 };
 
@@ -95,6 +151,8 @@ var setup = function setup(csrf) {
     ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector("#makeDomo"));
 
     ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
+
+    ReactDOM.render(React.createElement(DomoAddLevel, { csrf: csrf }), document.querySelector("#domoAddLevel"));
 
     loadDomosFromServer();
 };
