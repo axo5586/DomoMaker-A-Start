@@ -14,6 +14,7 @@ const DomoSchema = new mongoose.Schema({
     required: true,
     trim: true,
     set: setName,
+    unique: true
   },
 
   age: {
