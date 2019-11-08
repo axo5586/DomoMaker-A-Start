@@ -2,7 +2,7 @@ const models = require('../models');
 const Domo = models.Domo;
 
 const makeDomo = (req, res) => {
-  if (!req.body.name || !req.body.age || !req.body.level ) {
+  if (!req.body.name || !req.body.age || !req.body.level) {
     return res.status(400).json({ error: 'RAWR! Name, age, and level are required' });
   }
 
@@ -61,7 +61,7 @@ const addDomoLevel = (req, res) => {
   if (!req.query.name || !req.query.level) {
     return res.json({ error: 'Name and levels to add are required' });
   }
-  
+
   return Domo.findByName(req.query.name, (err, doc) => {
     if (err) {
       res.json({ err });
@@ -78,7 +78,7 @@ const addDomoLevel = (req, res) => {
 
     data.level += req.query.level;
     data.save();
-    return res.json({ error: 'added' });
+    return;
   });
 };
 
