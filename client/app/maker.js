@@ -29,6 +29,8 @@ const handleDomoLevel = (e) => {
         loadDomosFromServer();
     });
 
+    console.log('handleDomoLevel called');
+
     return false;
 }
 

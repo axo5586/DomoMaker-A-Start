@@ -58,11 +58,11 @@ const getDomos = (request, response) => {
 };
 
 const addDomoLevel = (req, res) => {
-  if (!req.query.name || !req.query.level) {
+  if (!req.body.name || !req.body.level) {
     return res.json({ error: 'Name and levels to add are required' });
   }
 
-  return Domo.findByName(req.query.name, (err, doc) => {
+  return Domo.DomoModel.findByName(req.body.name, (err, doc) => {
     if (err) {
       res.json({ err });
       return;
@@ -76,9 +76,14 @@ const addDomoLevel = (req, res) => {
     // eslint workaround
     const data = doc;
 
-    data.level += req.query.level;
-    data.save();
-    return;
+    const addedLevels = parseInt(req.body.level, 10);
+
+    data.level += addedLevels;
+    data.save().then(() => {
+      res.json({ data });
+    }).catch(() => {
+      res.json({ error: 'Error has occurred!' });
+    });
   });
 };
 

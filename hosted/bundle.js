@@ -31,6 +31,8 @@ var handleDomoLevel = function handleDomoLevel(e) {
         loadDomosFromServer();
     });
 
+    console.log('handleDomoLevel called');
+
     return false;
 };
 
